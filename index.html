@@ -44,26 +44,34 @@
             position: relative; width: 320px; height: 320px; margin: 0 auto 25px;
             display: flex; align-items: center; justify-content: center;
             filter: drop-shadow(0 0 15px var(--glow-color));
-            animation: heartBeat 1.5s ease-in-out infinite;
-        }
-
-        @keyframes heartBeat {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.03); }
         }
 
         .slideshow-container {
             width: 100%; height: 100%; position: relative;
-            clip-path: url(#heart-shape); background: #eee;
+            clip-path: url(#heart-shape); background: #fff;
+            overflow: hidden;
         }
 
         .slideshow-container img {
-            width: 100%; height: 100%; object-fit: cover;
+            width: 100%; height: 100%; 
+            object-fit: cover; /* PERFECT FIT */
+            object-position: center;
             position: absolute; top: 0; left: 0;
-            opacity: 0; transition: opacity 1s ease-in-out;
+            opacity: 0; 
+            transition: opacity 1s ease-in-out;
         }
 
-        .slideshow-container img.active { opacity: 1; }
+        /* ZOOM EFFECT: Runs when the image has the .active class */
+        .slideshow-container img.active { 
+            opacity: 1; 
+            animation: slowZoom 6s linear infinite; 
+        }
+
+        @keyframes slowZoom {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); } /* Subtle zoom in */
+            100% { transform: scale(1); }
+        }
 
         .nav-btn {
             position: absolute; top: 50%; transform: translateY(-50%);
@@ -120,12 +128,11 @@
     </div>
 
     <form id="clickTracker" action="https://formspree.io/f/xlgwgwpr" method="POST" style="display:none;">
-        <input type="hidden" name="Message" value="Sapana just said YES to being your Valentine!">
+        <input type="hidden" name="Message" value="Sapana said YES!">
         <input type="hidden" name="NoClicks" id="noClickCountInput" value="0">
     </form>
 
     <script>
-        // 1. Image Config
         const images = ['img1.png', 'img2.png', 'img3.png', 'img4.png', 'img5.png'];
         let currentIdx = 0;
         
@@ -134,13 +141,11 @@
         const noBtn = document.getElementById('noBtn');
         const askSection = document.getElementById('askSection');
         const successSection = document.getElementById('successSection');
-        const noClickCountInput = document.getElementById('noClickCountInput');
 
-        // 2. Initialize Slideshow
         images.forEach((src, i) => {
             const img = document.createElement('img');
             img.src = src;
-            img.onerror = function() { this.src = 'https://via.placeholder.com/320x320?text=Photo+Coming+Soon'; };
+            img.onerror = function() { this.src = 'https://via.placeholder.com/320x320?text=Sapana'; };
             if (i === 0) img.classList.add('active');
             slideshow.appendChild(img);
         });
@@ -153,7 +158,6 @@
             imgs[currentIdx].classList.add('active');
         }
 
-        // 3. Confetti Function
         function launchConfetti() {
             if (typeof confetti === 'function') {
                 confetti({
@@ -165,11 +169,10 @@
             }
         }
 
-        // 4. "No" Button Interaction
         let clickCount = 0;
         noBtn.addEventListener('click', () => {
             clickCount++;
-            noClickCountInput.value = clickCount; // Update the hidden form field
+            document.getElementById('noClickCountInput').value = clickCount;
             if (clickCount === 1) noBtn.innerText = "Are you sure?";
             else if (clickCount === 2) noBtn.innerText = "Really sure??";
             else {
@@ -179,23 +182,19 @@
             }
         });
 
-        // 5. "Yes" Button Interaction
         yesBtn.addEventListener('click', () => {
-            // UI Changes
             askSection.classList.add('hidden');
             successSection.classList.remove('hidden');
             launchConfetti();
-            setInterval(() => moveSlide(1), 3500);
+            setInterval(() => moveSlide(1), 5000); // 5 seconds per slide to allow zoom to show
 
-            // Send Formspree Notification
             fetch(document.getElementById('clickTracker').action, {
                 method: 'POST',
                 body: new FormData(document.getElementById('clickTracker')),
                 headers: { 'Accept': 'application/json' }
-            }).catch(err => console.log("Tracking failed but site works!"));
+            });
         });
 
-        // 6. Heart Trail
         const handleInteraction = (e) => {
             const x = e.touches ? e.touches[0].clientX : e.clientX;
             const y = e.touches ? e.touches[0].clientY : e.clientY;
