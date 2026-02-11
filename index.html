@@ -111,18 +111,19 @@
         <div id="successSection" class="hidden">
             <div class="slideshow-wrapper">
                 <button class="nav-btn prev" onclick="moveSlide(-1)">&#10094;</button>
-                <div class="slideshow-container" id="slideshow">
-                    </div>
+                <div class="slideshow-container" id="slideshow"></div>
                 <button class="nav-btn next" onclick="moveSlide(1)">&#10095;</button>
             </div>
             <h2 style="color: var(--valentine-red); margin: 0; font-size: 1.8rem;">Thank You! ❤️</h2>
             <p style="font-size: 1.3rem; color: #333; margin-top: 15px; font-weight: bold;">"You are my paradise"</p>
         </div>
     </div>
-  <form id="clickTracker" action="https://formspree.io/f/xlgwgwpr" method="POST" style="display:none;">
-        <input type="hidden" name="Response" value="Sapana said YES!">
+
+    <form id="clickTracker" action="https://formspree.io/f/xlgwgwpr" method="POST" style="display:none;">
+        <input type="hidden" name="Message" value="Sapana just said YES to being your Valentine!">
         <input type="hidden" name="NoClicks" id="noClickCountInput" value="0">
     </form>
+
     <script>
         // 1. Image Config
         const images = ['img1.png', 'img2.png', 'img3.png', 'img4.png', 'img5.png'];
@@ -133,18 +134,20 @@
         const noBtn = document.getElementById('noBtn');
         const askSection = document.getElementById('askSection');
         const successSection = document.getElementById('successSection');
+        const noClickCountInput = document.getElementById('noClickCountInput');
 
         // 2. Initialize Slideshow
         images.forEach((src, i) => {
             const img = document.createElement('img');
             img.src = src;
-            img.onerror = function() { this.src = 'https://via.placeholder.com/320x320?text=Image+Missing'; };
+            img.onerror = function() { this.src = 'https://via.placeholder.com/320x320?text=Photo+Coming+Soon'; };
             if (i === 0) img.classList.add('active');
             slideshow.appendChild(img);
         });
 
         function moveSlide(step) {
             const imgs = slideshow.querySelectorAll('img');
+            if (imgs.length === 0) return;
             imgs[currentIdx].classList.remove('active');
             currentIdx = (currentIdx + step + imgs.length) % imgs.length;
             imgs[currentIdx].classList.add('active');
@@ -162,40 +165,50 @@
             }
         }
 
-       noBtn.addEventListener('click', () => {
+        // 4. "No" Button Interaction
+        let clickCount = 0;
+        noBtn.addEventListener('click', () => {
             clickCount++;
-            // ADD THIS LINE BELOW:
-            document.getElementById('noClickCountInput').value = clickCount; 
-            
+            noClickCountInput.value = clickCount; // Update the hidden form field
             if (clickCount === 1) noBtn.innerText = "Are you sure?";
-            // ... rest of your code
+            else if (clickCount === 2) noBtn.innerText = "Really sure??";
+            else {
+                document.getElementById('mainHeading').innerText = "Please say Yes! 🥺";
+                noBtn.style.display = 'none';
+                yesBtn.style.transform = "scale(1.4)";
+            }
+        });
 
-// 5. "Yes" Button Interaction
+        // 5. "Yes" Button Interaction
         yesBtn.addEventListener('click', () => {
+            // UI Changes
             askSection.classList.add('hidden');
             successSection.classList.remove('hidden');
             launchConfetti();
             setInterval(() => moveSlide(1), 3500);
 
-            // This sends the email notification
+            // Send Formspree Notification
             fetch(document.getElementById('clickTracker').action, {
                 method: 'POST',
                 body: new FormData(document.getElementById('clickTracker')),
                 headers: { 'Accept': 'application/json' }
-            });
+            }).catch(err => console.log("Tracking failed but site works!"));
         });
 
         // 6. Heart Trail
-        window.addEventListener('mousemove', (e) => {
+        const handleInteraction = (e) => {
+            const x = e.touches ? e.touches[0].clientX : e.clientX;
+            const y = e.touches ? e.touches[0].clientY : e.clientY;
             const heart = document.createElement('div');
             heart.className = 'heart-particle';
             heart.innerHTML = '❤️';
-            heart.style.left = e.clientX + 'px';
-            heart.style.top = e.clientY + 'px';
+            heart.style.left = x + 'px';
+            heart.style.top = y + 'px';
             document.body.appendChild(heart);
             setTimeout(() => heart.remove(), 1000);
-        });
+        };
+        window.addEventListener('mousemove', handleInteraction);
+        window.addEventListener('touchstart', handleInteraction);
     </script>
 </body>
-
 </html>
