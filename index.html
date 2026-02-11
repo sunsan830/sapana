@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For Sapana ❤️</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --valentine-red: #d00000;
+            --white: #ffffff;
+            --glow-color: rgba(208, 0, 0, 0.6);
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            margin: 0; padding: 0; display: flex; justify-content: center; align-items: center;
+            height: 100vh; background-color: var(--valentine-red);
+            font-family: 'Arial', sans-serif; overflow: hidden; touch-action: none;
+        }
+
+        .container {
+            text-align: center; background: var(--white); padding: 3rem 2rem; border-radius: 40px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6); width: 95%; max-width: 420px; 
+            position: relative; z-index: 10;
+        }
+
+        .gif-container img { width: 160px; margin-bottom: 25px; border-radius: 15px; }
+        h1 { color: var(--valentine-red); font-size: 1.8rem; margin-bottom: 2.5rem; }
+
+        .buttons { display: flex; flex-direction: column; gap: 20px; align-items: center; }
+
+        button.main-btn {
+            width: 100%; max-width: 260px; padding: 18px; font-size: 1.4rem;
+            font-weight: bold; border: none; border-radius: 25px; cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #yesBtn { background-color: #28a745; color: white; }
+        #noBtn { background-color: #f0f0f0; color: #555; }
+
+        .slideshow-wrapper {
+            position: relative; width: 320px; height: 320px; margin: 0 auto 25px;
+            display: flex; align-items: center; justify-content: center;
+            filter: drop-shadow(0 0 15px var(--glow-color));
+            animation: heartBeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+
+        .slideshow-container {
+            width: 100%; height: 100%; position: relative;
+            clip-path: url(#heart-shape); background: #eee;
+        }
+
+        .slideshow-container img {
+            width: 100%; height: 100%; object-fit: cover;
+            position: absolute; top: 0; left: 0;
+            opacity: 0; transition: opacity 1s ease-in-out;
+        }
+
+        .slideshow-container img.active { opacity: 1; }
+
+        .nav-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background: rgba(208, 0, 0, 0.5); border: none; border-radius: 50%;
+            width: 45px; height: 45px; cursor: pointer; color: white;
+            font-weight: bold; font-size: 1.2rem; z-index: 30;
+        }
+        .prev { left: -15px; }
+        .next { right: -15px; }
+
+        .hidden { display: none !important; }
+
+        .heart-particle {
+            position: fixed; pointer-events: none; font-size: 32px; z-index: 5;
+            animation: floatUp 1s ease-out forwards;
+        }
+        @keyframes floatUp {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+            100% { transform: translate(-50%, -200%) scale(1.5); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <svg width="0" height="0" style="position: absolute;">
+        <defs>
+            <clipPath id="heart-shape" clipPathUnits="objectBoundingBox">
+                <path d="M0.5,0.95 L0.441,0.895 C0.176,0.641,0,0.485,0,0.297 C0,0.133,0.133,0,0.297,0 C0.39,0,0.479,0.043,0.5,0.11 C0.521,0.043,0.61,0,0.703,0 C0.867,0,1,0.133,1,0.297 C1,0.485,0.824,0.641,0.559,0.895 L0.5,0.95"></path>
+            </clipPath>
+        </defs>
+    </svg>
+
+    <div class="container">
+        <div id="askSection">
+            <div class="gif-container">
+                <img src="puppy.gif" alt="Cute Puppy" onerror="this.src='https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueGZ3bmZ6ZndueGZ3bmZ6ZndueGZ3bmZ6ZndueGZ3bmZ6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/v6aOebdclIYwhgnN0B/giphy.gif'">
+            </div>
+            <h1 id="mainHeading">Will you be my Valentine, Sapana?</h1>
+            <div class="buttons">
+                <button id="yesBtn" class="main-btn">Yes</button>
+                <button id="noBtn" class="main-btn">No</button>
+            </div>
+        </div>
+
+        <div id="successSection" class="hidden">
+            <div class="slideshow-wrapper">
+                <button class="nav-btn prev" onclick="moveSlide(-1)">&#10094;</button>
+                <div class="slideshow-container" id="slideshow">
+                    </div>
+                <button class="nav-btn next" onclick="moveSlide(1)">&#10095;</button>
+            </div>
+            <h2 style="color: var(--valentine-red); margin: 0; font-size: 1.8rem;">Thank You! ❤️</h2>
+            <p style="font-size: 1.3rem; color: #333; margin-top: 15px; font-weight: bold;">"You are my paradise"</p>
+        </div>
+    </div>
+
+    <script>
+        // 1. Image Config
+        const images = ['img1.png', 'img2.png', 'img3.png', 'img4.png', 'img5.png'];
+        let currentIdx = 0;
+        
+        const slideshow = document.getElementById('slideshow');
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const askSection = document.getElementById('askSection');
+        const successSection = document.getElementById('successSection');
+
+        // 2. Initialize Slideshow
+        images.forEach((src, i) => {
+            const img = document.createElement('img');
+            img.src = src;
+            img.onerror = function() { this.src = 'https://via.placeholder.com/320x320?text=Image+Missing'; };
+            if (i === 0) img.classList.add('active');
+            slideshow.appendChild(img);
+        });
+
+        function moveSlide(step) {
+            const imgs = slideshow.querySelectorAll('img');
+            imgs[currentIdx].classList.remove('active');
+            currentIdx = (currentIdx + step + imgs.length) % imgs.length;
+            imgs[currentIdx].classList.add('active');
+        }
+
+        // 3. Confetti Function
+        function launchConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 150,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#ff0000', '#ff69b4', '#ffffff']
+                });
+            }
+        }
+
+        // 4. "No" Button Interaction
+        let clickCount = 0;
+        noBtn.addEventListener('click', () => {
+            clickCount++;
+            if (clickCount === 1) noBtn.innerText = "Are you sure?";
+            else if (clickCount === 2) noBtn.innerText = "Really sure??";
+            else {
+                document.getElementById('mainHeading').innerText = "Please say Yes! 🥺";
+                noBtn.style.display = 'none';
+                yesBtn.style.transform = "scale(1.4)";
+            }
+        });
+
+        // 5. "Yes" Button Interaction
+        yesBtn.addEventListener('click', () => {
+            askSection.classList.add('hidden');
+            successSection.classList.remove('hidden');
+            launchConfetti();
+            setInterval(() => moveSlide(1), 3500);
+        });
+
+        // 6. Heart Trail
+        window.addEventListener('mousemove', (e) => {
+            const heart = document.createElement('div');
+            heart.className = 'heart-particle';
+            heart.innerHTML = '❤️';
+            heart.style.left = e.clientX + 'px';
+            heart.style.top = e.clientY + 'px';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 1000);
+        });
+    </script>
+</body>
+</html>
