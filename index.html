@@ -119,7 +119,10 @@
             <p style="font-size: 1.3rem; color: #333; margin-top: 15px; font-weight: bold;">"You are my paradise"</p>
         </div>
     </div>
-
+  <form id="clickTracker" action="https://formspree.io/f/xlgwgwpr" method="POST" style="display:none;">
+        <input type="hidden" name="Response" value="Sapana said YES!">
+        <input type="hidden" name="NoClicks" id="noClickCountInput" value="0">
+    </form>
     <script>
         // 1. Image Config
         const images = ['img1.png', 'img2.png', 'img3.png', 'img4.png', 'img5.png'];
@@ -159,25 +162,27 @@
             }
         }
 
-        // 4. "No" Button Interaction
-        let clickCount = 0;
-        noBtn.addEventListener('click', () => {
+       noBtn.addEventListener('click', () => {
             clickCount++;
+            // ADD THIS LINE BELOW:
+            document.getElementById('noClickCountInput').value = clickCount; 
+            
             if (clickCount === 1) noBtn.innerText = "Are you sure?";
-            else if (clickCount === 2) noBtn.innerText = "Really sure??";
-            else {
-                document.getElementById('mainHeading').innerText = "Please say Yes! 🥺";
-                noBtn.style.display = 'none';
-                yesBtn.style.transform = "scale(1.4)";
-            }
-        });
+            // ... rest of your code
 
-        // 5. "Yes" Button Interaction
+// 5. "Yes" Button Interaction
         yesBtn.addEventListener('click', () => {
             askSection.classList.add('hidden');
             successSection.classList.remove('hidden');
             launchConfetti();
             setInterval(() => moveSlide(1), 3500);
+
+            // This sends the email notification
+            fetch(document.getElementById('clickTracker').action, {
+                method: 'POST',
+                body: new FormData(document.getElementById('clickTracker')),
+                headers: { 'Accept': 'application/json' }
+            });
         });
 
         // 6. Heart Trail
@@ -192,4 +197,5 @@
         });
     </script>
 </body>
+
 </html>
