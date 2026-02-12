@@ -126,14 +126,16 @@
             <p style="font-size: 1.3rem; color: #333; margin-top: 15px; font-weight: bold;">"You are my paradise"</p>
         </div>
     </div>
-
+<footer>
+        &copy; 2026 Sandeep Sapkota
+    </footer>
     <form id="clickTracker" action="https://formspree.io/f/xlgwgwpr" method="POST" style="display:none;">
         <input type="hidden" name="Message" value="Sapana said YES!">
         <input type="hidden" name="NoClicks" id="noClickCountInput" value="0">
     </form>
 
     <script>
-        const images = ['img1.png', 'img2.png', 'img3.png', 'img4.png', 'img5.png'];
+        const images = ['img1.png', 'img2.png', 'img3.png', 'img4.png', 'img5.png', 'img6.png', 'img7.png'];
         let currentIdx = 0;
         
         const slideshow = document.getElementById('slideshow');
@@ -176,7 +178,7 @@
             if (clickCount === 1) noBtn.innerText = "Are you sure?";
             else if (clickCount === 2) noBtn.innerText = "Really sure??";
             else {
-                document.getElementById('mainHeading').innerText = "Please say Yes! 🥺";
+                document.getElementById('mainHeading').innerText = "I am crying now..Please say Yes! 🥺";
                 noBtn.style.display = 'none';
                 yesBtn.style.transform = "scale(1.4)";
             }
@@ -211,4 +213,5 @@
     </script>
 </body>
 </html>
+
 
