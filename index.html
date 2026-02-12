@@ -81,7 +81,21 @@
         }
         .prev { left: -15px; }
         .next { right: -15px; }
-
+/* FIXED WHITE BOTTOM COPYRIGHT */
+        footer {
+            position: absolute; 
+            bottom: 20px; 
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: #ffffff; 
+            font-size: 0.85rem; 
+            font-weight: bold;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.4);
+            z-index: 100;
+            letter-spacing: 0.5px;
+            pointer-events: none;
+        }
         .hidden { display: none !important; }
 
         .heart-particle {
@@ -127,7 +141,7 @@
         </div>
     </div>
 <footer>
-        &copy; 2026 Sandeep Sapkota
+        &copy;Sandeep Sapkota
     </footer>
     <form id="clickTracker" action="https://formspree.io/f/xlgwgwpr" method="POST" style="display:none;">
         <input type="hidden" name="Message" value="Sapana said YES!">
@@ -213,5 +227,6 @@
     </script>
 </body>
 </html>
+
 
 
