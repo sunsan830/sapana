@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>For Sapana ❤️</title>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root {
             --valentine-red: #d00000;
@@ -173,25 +172,23 @@
             currentIdx = (currentIdx + step + imgs.length) % imgs.length;
             imgs[currentIdx].classList.add('active');
         }
-
-// Messenger-Friendly Confetti Logic
-        function launchConfetti() {
-            if (typeof confetti === 'function') {
-                confetti({
-                    particleCount: 150,
-                    spread: 70,
-                    origin: { y: 0.6 },
-                    colors: ['#ff0000', '#ff69b4', '#ffffff'],
-                    disableForReducedMotion: false // Force it to work
-                });
-            } else {
-                console.log("Confetti library failed to load, trying backup...");
-                // Manual fallback: simple heart shower if library fails
-                for(let i=0; i<20; i++) {
-                    setTimeout(spawnHeart, i * 100);
-                }
+// NEW CSS BURST LOGIC (No library needed)
+        function burstHearts() {
+            const heartIcons = ['❤️', '💖', '💝', '💕', '💘'];
+            for (let i = 0; i < 40; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'celebration-heart';
+                    heart.innerHTML = heartIcons[Math.floor(Math.random() * heartIcons.length)];
+                    heart.style.left = Math.random() * 100 + 'vw';
+                    heart.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                    heart.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    document.body.appendChild(heart);
+                    setTimeout(() => heart.remove(), 4000);
+                }, i * 50);
             }
         }
+
         let clickCount = 0;
         noBtn.addEventListener('click', () => {
             clickCount++;
@@ -234,6 +231,7 @@
     </script>
 </body>
 </html>
+
 
 
 
