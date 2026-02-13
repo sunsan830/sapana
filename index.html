@@ -14,9 +14,10 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
-            margin: 0; padding: 0; display: flex; justify-content: center; align-items: center;
-            height: 100vh; background-color: var(--valentine-red);
+            margin: 0; padding: 0; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            min-height: 100vh; background-color: var(--valentine-red);
             font-family: 'Arial', sans-serif; overflow: hidden; touch-action: none;
+            position: relative;
         }
 
         .container {
@@ -39,6 +40,7 @@
         #yesBtn { background-color: #28a745; color: white; }
         #noBtn { background-color: #f0f0f0; color: #555; }
 
+        /* THE HEART FRAME & NAV BUTTONS */
         .slideshow-wrapper {
             position: relative; width: 320px; height: 320px; margin: 0 auto 25px;
             display: flex; align-items: center; justify-content: center;
@@ -52,49 +54,51 @@
         }
 
         .slideshow-container img {
-            width: 100%; height: 100%; 
-            object-fit: cover; /* PERFECT FIT */
-            object-position: center;
-            position: absolute; top: 0; left: 0;
-            opacity: 0; 
+            width: 100%; height: 100%; object-fit: cover; object-position: center;
+            position: absolute; top: 0; left: 0; opacity: 0; 
             transition: opacity 1s ease-in-out;
         }
 
-        /* ZOOM EFFECT: Runs when the image has the .active class */
         .slideshow-container img.active { 
             opacity: 1; 
-            animation: slowZoom 6s linear infinite; 
+            animation: kenBurns 6s ease-in-out infinite; 
         }
 
-        @keyframes slowZoom {
+        @keyframes kenBurns {
             0% { transform: scale(1); }
-            50% { transform: scale(1.15); } /* Subtle zoom in */
+            50% { transform: scale(1.15); }
             100% { transform: scale(1); }
         }
 
+        /* NAVIGATION BUTTONS RESTORED */
         .nav-btn {
             position: absolute; top: 50%; transform: translateY(-50%);
-            background: rgba(208, 0, 0, 0.5); border: none; border-radius: 50%;
-            width: 45px; height: 45px; cursor: pointer; color: white;
+            background: rgba(208, 0, 0, 0.4); border: none; border-radius: 50%;
+            width: 40px; height: 40px; cursor: pointer; color: white;
             font-weight: bold; font-size: 1.2rem; z-index: 30;
+            display: flex; align-items: center; justify-content: center;
         }
-        .prev { left: -15px; }
-        .next { right: -15px; }
-/* FIXED WHITE BOTTOM COPYRIGHT */
+        .prev { left: -10px; }
+        .next { right: -10px; }
+
+        /* HEART BURST EFFECT */
+        .celebration-heart {
+            position: fixed; bottom: -10vh; font-size: 2rem;
+            pointer-events: none; z-index: 999;
+            animation: rise 3s ease-out forwards;
+        }
+
+        @keyframes rise {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
+        }
+
         footer {
-            position: absolute; 
-            bottom: 20px; 
-            left: 0;
-            right: 0;
-            text-align: center;
-            color: #ffffff; 
-            font-size: 0.85rem; 
-            font-weight: bold;
-            text-shadow: 1px 1px 4px rgba(0,0,0,0.4);
-            z-index: 100;
-            letter-spacing: 0.5px;
-            pointer-events: none;
+            position: absolute; bottom: 20px; left: 0; right: 0; text-align: center;
+            color: #ffffff; font-size: 0.85rem; font-weight: bold;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.4); z-index: 100;
         }
+
         .hidden { display: none !important; }
 
         .heart-particle {
@@ -120,7 +124,7 @@
     <div class="container">
         <div id="askSection">
             <div class="gif-container">
-                <img src="puppy.gif" alt="Cute Puppy" onerror="this.src='https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueGZ3bmZ6ZndueGZ3bmZ6ZndueGZ3bmZ6ZndueGZ3bmZ6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/v6aOebdclIYwhgnN0B/giphy.gif'">
+                <img src="puppy.gif" alt="Puppy">
             </div>
             <h1 id="mainHeading">Will you disappear with Me, Sapana?</h1>
             <div class="buttons">
@@ -139,10 +143,10 @@
             <p style="font-size: 1.3rem; color: #333; margin-top: 15px; font-weight: bold;">"You are my paradise"</p>
         </div>
     </div>
-<footer>
-        &copy;Sandeep Sapkota
-    </footer>
-    <form id="clickTracker" action="https://formspree.io/f/" method="POST" style="display:none;">
+
+    <footer>&copy; Sandeep Sapkota</footer>
+
+    <form id="clickTracker" action="https://formspree.io/f/mreapowz" method="POST" style="display:none;">
         <input type="hidden" name="Message" value="Sapana said YES!">
         <input type="hidden" name="NoClicks" id="noClickCountInput" value="0">
     </form>
@@ -160,11 +164,12 @@
         images.forEach((src, i) => {
             const img = document.createElement('img');
             img.src = src;
-            img.onerror = function() { this.src = 'https://via.placeholder.com/320x320?text=Sapana'; };
+            img.onerror = function() { this.src = 'https://via.placeholder.com/320x320?text=❤️'; };
             if (i === 0) img.classList.add('active');
             slideshow.appendChild(img);
         });
 
+        // Fixed navigation logic
         function moveSlide(step) {
             const imgs = slideshow.querySelectorAll('img');
             if (imgs.length === 0) return;
@@ -172,7 +177,7 @@
             currentIdx = (currentIdx + step + imgs.length) % imgs.length;
             imgs[currentIdx].classList.add('active');
         }
-// NEW CSS BURST LOGIC (No library needed)
+
         function burstHearts() {
             const heartIcons = ['❤️', '💖', '💝', '💕', '💘'];
             for (let i = 0; i < 40; i++) {
@@ -196,7 +201,7 @@
             if (clickCount === 1) noBtn.innerText = "Are you sure?";
             else if (clickCount === 2) noBtn.innerText = "Really sure??";
             else {
-                document.getElementById('mainHeading').innerText = "I am crying now..Please say Yes! 🥺";
+                document.getElementById('mainHeading').innerText = "I am Crying Now...Please say Yes! 🥺";
                 noBtn.style.display = 'none';
                 yesBtn.style.transform = "scale(1.4)";
             }
@@ -205,8 +210,8 @@
         yesBtn.addEventListener('click', () => {
             askSection.classList.add('hidden');
             successSection.classList.remove('hidden');
-            launchConfetti();
-            setInterval(() => moveSlide(1), 5000); // 5 seconds per slide to allow zoom to show
+            burstHearts();
+            setInterval(() => moveSlide(1), 5000);
 
             fetch(document.getElementById('clickTracker').action, {
                 method: 'POST',
@@ -215,25 +220,15 @@
             });
         });
 
-        const handleInteraction = (e) => {
-            const x = e.touches ? e.touches[0].clientX : e.clientX;
-            const y = e.touches ? e.touches[0].clientY : e.clientY;
+        window.addEventListener('mousemove', (e) => {
             const heart = document.createElement('div');
             heart.className = 'heart-particle';
             heart.innerHTML = '❤️';
-            heart.style.left = x + 'px';
-            heart.style.top = y + 'px';
+            heart.style.left = e.clientX + 'px';
+            heart.style.top = e.clientY + 'px';
             document.body.appendChild(heart);
             setTimeout(() => heart.remove(), 1000);
-        };
-        window.addEventListener('mousemove', handleInteraction);
-        window.addEventListener('touchstart', handleInteraction);
+        });
     </script>
 </body>
 </html>
-
-
-
-
-
-
